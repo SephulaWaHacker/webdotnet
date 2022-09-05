@@ -1,0 +1,22 @@
+bmw-generic-tile {
+  margin: 1px;
+}
+
+.header {
+  font-size: xx-large;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.footer > * {
+  margin: 5px;
+}
+
+:host ::ng-deep{
+  [button="warning"] button {
+    background-color: var(--color-bmw-signal3) !important;
+  }
+}

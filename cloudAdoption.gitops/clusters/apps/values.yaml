@@ -1,0 +1,11 @@
+argocd:
+  namespace: argocd
+source:
+  gitRepo: https://dev.azure.com/FG-Z-TTD-Blue/FG-Z-TTD-Blue/_git/bmw.cloudadoption.gitops
+  gitRevision: main
+location: west-europe
+locationShortName: weu
+project:
+  name: cloud-adoption
+
+

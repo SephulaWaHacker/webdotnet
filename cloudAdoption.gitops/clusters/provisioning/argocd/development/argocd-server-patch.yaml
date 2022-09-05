@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+spec:
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8083"
+        prometheus.io/scheme: HTTP
+        prometheus.io/path: /metrics
+        metrics.dynatrace.com/path: /metrics
+        metrics.dynatrace.com/port: "8083"
+        metrics.dynatrace.com/scheme: HTTP
+        metrics.dynatrace.com/scrape: "true"
+      

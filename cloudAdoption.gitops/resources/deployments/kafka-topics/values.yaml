@@ -1,0 +1,15 @@
+topics:
+  - name: bmw.cloudadoption.bom.java
+    cleanupPolicy: compact
+  - name: bmw.cloudadoption.parts.v1
+    cleanupPolicy: compact   
+  - name: bmw.cloudadoption.parts.java.v1
+    cleanupPolicy: compact
+  - name: bmw.cloudadoption.parts.c.v1
+    cleanupPolicy: compact
+  - name: bmw.cloudadoption.parts.python.v1
+    cleanupPolicy: compact
+  - name: bmw.cloudadoption.bom.v1
+    cleanupPolicy: compact
+  - name: bmw.cloudadoption.vehiclemockorder.v1
+    cleanupPolicy: compact

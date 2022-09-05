@@ -1,0 +1,26 @@
+replicas: 1
+revisionHistoryLimit: 5
+metricsPath: /
+servicePort: 80
+serviceScheme: HTTP
+deploymentStrategy: RollingUpdate
+terminationGracePeriodSeconds: 30
+ingress:
+  enabled: true
+  path: /
+autoscaling:
+  enabled: false
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 85
+resources:
+  limits:
+    cpu: 1
+    memory: 500Mi
+  requests:
+    cpu: 200m
+    memory: 250Mi
+urls:
+  vehicleOrderServiceUrl: https://vehicle-order-service-java.ttd-blue.azure.bmw.cloud
+image:
+  tag: latest
+  url: dweuttdblueacr.azurecr.io/bmw.cloudadoption.vehiclemockorder-ui-java

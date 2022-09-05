@@ -1,0 +1,22 @@
+{
+  "ADD_PART_FAMILY": "Add Part Family",
+  "BOM_DETAILS": "Bom Details",
+  "BOMS": "Boms",
+  "CANCEL": "Cancel",
+  "CREATE": "Create",
+  "DELETE_BOM": "Delete Bom",
+  "END_DATE": "End Date",
+  "HOME_TITLE": "Vehicle BOM Manager",
+  "MODIFY_BOM": "Modify Bom",
+  "NAME": "Name",
+  "PART_FAMILIES": "Part Families",
+  "PART_FAMILY_DETAILS": "Part Family Details",
+  "PART_FAMILY_ID": "Part Family ID",
+  "PARTS": "Parts",
+  "PARTS_COUNT": "Parts Count",
+  "PUBLISH_BOM": "Publish Bom",
+  "SAVE": "Save",
+  "START_DATE": "Start Date",
+  "STATUS": "Status",
+  "VEHICLE_ID": "Vehicle ID"
+}

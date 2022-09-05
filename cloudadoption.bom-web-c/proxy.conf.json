@@ -1,0 +1,26 @@
+{
+  "/java": {
+    "target": "https://bom-service-ui.cloud-adoption.azure.cloud.bmw",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/csharp": {
+    "target": "https://bom-service-ui.cloud-adoption.azure.cloud.bmw",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/python": {
+    "target": "https://bom-service-ui.cloud-adoption.azure.cloud.bmw",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/auth/*": {
+    "target": "https://auth-i.bmwgroup.net/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,24 @@
+<bmw-theme>
+  <app-header [profile]="(profile | async)"></app-header>
+  <bmw-inline-message
+    *ngIf="infoMessages.length > 0"
+    (closeEvent)="clearInfoMessages()"
+    [type]="'info'" [messages]="infoMessages">
+  </bmw-inline-message>
+  <bmw-inline-message
+    *ngIf="errorMessages.length > 0"
+    (closeEvent)="clearErrorMessages()" [type]="'error'" [messages]="errorMessages">
+  </bmw-inline-message>
+  <div class="bmw__grid__inner">
+    <div class="bmw__grid__cell bmw__grid__cell--span-3">
+      <bmw-dropdown [(value)]="api" (valueChange)="setApi($event)">
+        <bmw-label>Api</bmw-label>
+        <bmw-dropdown-item *ngFor="let api of apis" [value]="api" [label]="api"></bmw-dropdown-item>
+      </bmw-dropdown>
+    </div>
+  </div>
+  <div [class.loading]="(isLoading | async) ?? false" class="bmw__grid">
+    <router-outlet></router-outlet>
+  </div>
+  <bmw-progress-circle loadingLabel="Loading..." [show]="(isLoading | async) ?? false"></bmw-progress-circle>
+</bmw-theme>

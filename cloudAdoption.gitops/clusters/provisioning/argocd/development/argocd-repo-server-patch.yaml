@@ -1,0 +1,69 @@
+# argocd-repo-server-ksops-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+spec:
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8084"
+        prometheus.io/scheme: HTTP
+        prometheus.io/path: /metrics
+        metrics.dynatrace.com/path: /metrics
+        metrics.dynatrace.com/port: "8084"
+        metrics.dynatrace.com/scheme: HTTP
+        metrics.dynatrace.com/scrape: "true"
+    spec:
+      # 1. Define an emptyDir volume which will hold the custom binaries
+      volumes:
+        - name: custom-tools
+          emptyDir: {}
+      # 2. Use an init container to download/copy custom binaries into the emptyDir
+      initContainers:
+        - name: install-ksops
+          # Match Argo CD Go version
+          image: nexus.bmwgroup.net:443/viaductoss/ksops:v2.3.2
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo "Installing KSOPS...";
+              export PKG_NAME=ksops;
+              mv ${PKG_NAME}.so /custom-tools/;
+              mv $GOPATH/bin/kustomize /custom-tools/;
+              echo "Done.";
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+      # 3. Volume mount the custom binary to the bin directory (overriding the existing version)
+      containers:
+        - name: argocd-repo-server
+          volumeMounts:
+            - mountPath: /usr/local/bin/kustomize
+              name: custom-tools
+              subPath: kustomize
+              readOnly: true
+              # Verify this matches a XDG_CONFIG_HOME=/.config env variable
+            - mountPath: /.config/kustomize/plugin/viaduct.ai/v1/ksops/ksops.so
+              name: custom-tools
+              subPath: ksops.so
+              readOnly: true
+          # 4. Set the XDG_CONFIG_HOME env variable to allow kustomize to detect the plugin
+          env:
+            - name: XDG_CONFIG_HOME
+              value: /.config
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: tenantId
+                  name: sops-service-principal
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: clientId
+                  name: sops-service-principal
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: clientSecret
+                  name: sops-service-principal

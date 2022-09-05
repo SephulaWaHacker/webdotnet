@@ -1,0 +1,49 @@
+{{- range $application, $applicationConfigs := .Values.applications }}
+{{- if or ($applicationConfigs.deployed) (eq ($applicationConfigs.deployed | toString) "<nil>") }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $.Values.project.name }}-{{ $application }}
+  namespace: {{ $.Values.argocd.namespace}}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.project.name }}
+  destination:
+    namespace: {{ $.Values.namespace }}
+    server: https://kubernetes.default.svc
+  source:
+    path:  resources/deployments/{{ $application }}
+    repoURL: {{ $.Values.source.gitRepo }}
+    targetRevision: {{ $.Values.source.gitRevision }}
+    helm:
+      parameters:
+        - name: "project.name"
+          value: {{ $.Values.project.name }}
+        - name: "environment"
+          value: {{ $.Values.environment }}
+        - name: "argocd.namespace"
+          value: {{ $.Values.argocd.namespace }}
+        - name: "source.gitRepo"
+          value: {{ $.Values.source.gitRepo }}
+        - name: "source.gitRevision"
+          value: {{ $.Values.source.gitRevision }}
+        - name: "namespace"
+          value: {{ $.Values.project.name }}-{{ $.Values.environment }}
+      releaseName: {{ $.Values.project.name }}-{{ $application }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+{{- end }}
+{{- end }}

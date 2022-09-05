@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ingress-nginx
+images:
+  - name: k8s.gcr.io/ingress-nginx/controller:v1.1.1@sha256:0bc88eb15f9e7f84e8e56c14fa5735aaa488b840983f87bd79b1054190e660de
+    newName: nexus.bmwgroup.net:443/ingress-nginx/controller
+    newTag: v1.1.1@sha256:0bc88eb15f9e7f84e8e56c14fa5735aaa488b840983f87bd79b1054190e660de
+  - name: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
+    newName: nexus.bmwgroup.net:443/ingress-nginx/kube-webhook-certgen
+    newTag: v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
+replicas:
+  - name: ingress-nginx-controller
+    count: 5
+resources:
+  - https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.1/deploy/static/provider/cloud/deploy.yaml
+  - ingress-nginx-controller-metrics.yaml
+  - ingress-nginx-controller-class-private.yaml
+patchesStrategicMerge:
+  - ingress-nginx-controller-deployment.yaml
+

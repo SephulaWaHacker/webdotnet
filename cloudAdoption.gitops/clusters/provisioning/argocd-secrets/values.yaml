@@ -1,0 +1,10 @@
+gitCredentials:
+  username: ''
+  password: ''
+
+sopsServicePrincipal:
+  tenantId: ''
+  clientId: ''
+  clientSecret: ''  
+
+argocdNamespace: argocd  

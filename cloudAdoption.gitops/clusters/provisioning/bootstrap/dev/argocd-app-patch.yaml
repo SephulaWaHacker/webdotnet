@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloud-adoption-services
+  namespace: argocd
+spec:
+  source:
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values-dev.yaml

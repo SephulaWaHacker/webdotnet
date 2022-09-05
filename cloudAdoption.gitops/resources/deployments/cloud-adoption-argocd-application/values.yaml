@@ -1,0 +1,28 @@
+applications:
+  cloud-adoption-namespaces: {}
+
+  call-off-service-ui: {}
+  call-off-service-java: {}
+  call-off-service-c: {}
+  call-off-service-python: {}
+
+  parts-service-ui: {}
+  parts-service-java: {}
+  parts-service-c: {}
+  parts-service-ui-c: {}
+  parts-service-python: {}
+
+  bom-service-ui: {}
+  bom-service-java: {}
+  bom-service-c: {}
+  bom-service-ui-c: {}
+  bom-service-python: {}
+  bom-service-ui-python: {}
+
+  vehicle-order-service-ui: {}
+  vehicle-order-service-ui-java: {}
+  vehicle-order-service-java: {}
+  vehicle-order-service-c: {}
+  vehicle-order-service-python: {}
+
+  kafka-topics: {}

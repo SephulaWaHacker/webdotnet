@@ -1,0 +1,43 @@
+<bmw-generic-tile *ngIf="partFamily">
+  <span class="header">{{'PART_FAMILY_DETAILS' | translate}}</span>
+  <div class="bmw__grid__inner">
+    <bmw-inputfield class="bmw__grid__cell bmw__grid__cell--span-6">
+      <bmw-label>{{'NAME' | translate}}</bmw-label>
+      <input bmwInput [(ngModel)]="partFamily.name">
+    </bmw-inputfield>
+  </div>
+</bmw-generic-tile>
+<bmw-generic-tile *ngIf="partFamily?.parts">
+  <div class="bmw__grid__cell bmw__grid__cell--span-11">
+    <span class="header">{{'PARTS' | translate}}</span>
+    <bmw-icon-button iconClass="iwp-icon-gen_add" (clickEvent)="onAddPart()"></bmw-icon-button>
+  </div>
+  <div *ngFor="let part of partFamily.parts" class="bmw__grid__inner bmw__grid__cell--span-12">
+    <bmw-dropdown [(ngModel)]="part.partNumber" (ngModelChange)="onSelectPart($event, part)">
+      <bmw-label>{{'PART_NUMBER' | translate}}</bmw-label>
+      <bmw-dropdown-item *ngFor="let part of parts" [value]="part.partNumber" [label]="part.partNumber"></bmw-dropdown-item>
+    </bmw-dropdown>
+    <bmw-inputfield class="bmw__grid__cell bmw__grid__cell--span-2">
+      <bmw-label>{{'PART_NUMBER' | translate}}</bmw-label>
+      <input bmwInput [(ngModel)]="part.partNumber" [readOnly]="true">
+    </bmw-inputfield>
+    <bmw-inputfield class="bmw__grid__cell bmw__grid__cell--span-2">
+      <bmw-label>{{'UNIT_TYPE' | translate}}</bmw-label>
+      <input bmwInput [(ngModel)]="part.unitType" [readOnly]="true">
+    </bmw-inputfield>
+    <div>
+      <bmw-label>{{'ASSEMBLED' | translate}}</bmw-label>
+      <bmw-checkbox [(ngModel)]="part.assembled" [disabled]="true"></bmw-checkbox>
+    </div>
+    <bmw-inputfield class="bmw__grid__cell bmw__grid__cell--span-2">
+      <bmw-label>{{'QUANTITY' | translate}}</bmw-label>
+      <input bmwInput [(ngModel)]="part.quantity" type="number">
+    </bmw-inputfield>
+    <bmw-icon-button iconClass="iwp-icon-gen_delete" (clickEvent)="onDelete(part)"></bmw-icon-button>
+  </div>
+
+</bmw-generic-tile>
+<div class="footer">
+  <bmw-button button="primary" (click)="onSave()">Save</bmw-button>
+  <bmw-button button="secondary" (click)="onBack()">Cancel</bmw-button>
+</div>

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../base
+images:
+  - name: quay.io/argoproj/argocd
+    newName: nexus.bmwgroup.net:443/argoproj/argocd
+    newTag: v2.2.5
+  - name: ghcr.io/dexidp/dex
+    newName: nexus.bmwgroup.net:443/dexidp/dex
+    newTag: v2.30.2
+  - name: redis
+    newName: nexus.bmwgroup.net:443/redis
+    newTag: 6.2.6-alpine
+patchesStrategicMerge:
+  - argocd-configmap-patch.yaml
+  - argocd-repo-server-patch.yaml
+  - argocd-server-patch.yaml
+  - argocd-application-controller-patch.yaml

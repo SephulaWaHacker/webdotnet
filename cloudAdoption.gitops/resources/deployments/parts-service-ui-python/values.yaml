@@ -1,0 +1,43 @@
+replicas: 1
+revisionHistoryLimit: 5
+metricsPath: /
+servicePort: 8080
+serviceScheme: HTTP
+deploymentStrategy: RollingUpdate
+terminationGracePeriodSeconds: 30
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  enabled: true
+  path: /
+autoscaling:
+  enabled: false
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 85
+livenessProbe:
+  path: /health
+readinessProbe:
+  path: /health
+resources:
+  limits:
+    cpu: 800m
+    memory: 500Mi
+  requests:
+    cpu: 200m
+    memory: 250Mi
+
+environmentSecrets:
+  KAFKA_KEY:
+    secret_name: kafka-key
+  KAFKA_SECRET:
+    secret_name: kafka-secret
+
+urls:
+  java: parts-service-java
+  csharp: parts-service-c
+  python: parts-service-python
+
+image:
+  tag: latest
+  url: dweuttdblueacr.azurecr.io/bmw.cloudadoption.part-web-python

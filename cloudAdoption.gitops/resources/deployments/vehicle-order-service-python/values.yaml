@@ -1,0 +1,50 @@
+replicas: 1
+revisionHistoryLimit: 5
+metricsPath: /
+servicePort: 80
+serviceScheme: HTTP
+deploymentStrategy: RollingUpdate
+terminationGracePeriodSeconds: 30
+ingress:
+  enabled: true
+  path: /
+autoscaling:
+  enabled: false
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 85
+livenessProbe:
+  path: /
+readinessProbe:
+  path: /
+resources:
+  limits:
+    cpu: 1
+    memory: 500Mi
+  requests:
+    cpu: 200m
+    memory: 250Mi
+environmentVariables:
+
+  KAFKA_BOOTSTRAP_SERVER: pkc-lq8gm.westeurope.azure.confluent.cloud:9092
+
+environmentSecrets:
+  KAFKA_KEY:
+    secret_name: kafka-key
+  KAFKA_SECRET:
+    secret_name: kafka-secret
+  DB_USER:
+    secret_name: db-user
+  DB_PASSWORD:
+    secret_name: db-password
+
+  DB_HOST:
+    secret_name: db-host
+  DB_PORT:
+    secret_name: db-port
+  DB_ADMIN_USER:
+    secret_name: db-admin-user
+  DB_ADMIN_PASSWORD:
+    secret_name: db-admin-password
+image:
+  tag: latest
+  url: dweuttdblueacr.azurecr.io/sample-service

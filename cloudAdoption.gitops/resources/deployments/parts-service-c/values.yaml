@@ -1,0 +1,43 @@
+replicas: 1
+revisionHistoryLimit: 5
+metricsPath: /
+servicePort: 80
+serviceScheme: HTTP
+deploymentStrategy: RollingUpdate
+terminationGracePeriodSeconds: 30
+ingress:
+  enabled: true
+  path: /
+autoscaling:
+  enabled: false
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 85
+livenessProbe:
+  path: /
+readinessProbe:
+  path: /
+resources:
+  limits:
+    cpu: 1
+    memory: 500Mi
+  requests:
+    cpu: 200m
+    memory: 250Mi
+environmentVariables:
+
+  KAFKA_BOOTSTRAP_SERVER: kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+  KAFKA_PARTS_TOPIC: bmw.cloudadoption.parts.c.v1
+  KAFKA_GROUPID: parts-service-c
+  KAFKA_AUTOOFFSETRESET: earliest
+  KAFKA_ENABLEAUTOCOMMIT: false
+  KAFKA_SASLMECHANISM: ScramSha512
+  KAFKA_SECURITYPROTOCOL: SaslPlaintext
+
+environmentSecrets:
+  KAFKA_KEY:
+    secret_name: kafka-username
+  KAFKA_SECRET:
+    secret_name: kafka-password
+image:
+  tag: "20220826.1"
+  url: dweuttdblueacr.azurecr.io/bmw.cloudadoption.part-c

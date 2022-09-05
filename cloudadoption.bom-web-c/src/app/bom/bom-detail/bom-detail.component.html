@@ -1,0 +1,45 @@
+<bmw-generic-tile>
+  <span class="header">{{'BOM_DETAILS' | translate}}</span>
+  <div class="bmw__grid__inner">
+    <bmw-inputfield class="bmw__grid__cell bmw__grid__cell--span-6">
+      <bmw-label>{{'VEHICLE_ID' | translate}}</bmw-label>
+      <input bmwInput [(ngModel)]="bom.vehicleId">
+    </bmw-inputfield>
+    <bmw-inputfield class="bmw__grid__cell bmw__grid__cell--span-6">
+      <bmw-label>{{'STATUS' | translate}}</bmw-label>
+      <input bmwInput [(ngModel)]="bom.status" [readOnly]="true">
+    </bmw-inputfield>
+    <div class="bmw__grid__cell bmw__grid__cell--span-6">
+      <bmw-label for="date-of-pickup">{{'START_DATE' | translate}}</bmw-label>
+      <bmw-datepicker
+        inputId="date-of-pickup"
+        [required]="true"
+        placeholder="YYYY-MM-DD"
+        dateFormat="yy-mm-dd"
+        [showButtonBar]="true"
+        [(ngModel)]="bom.startDate"
+        [showWeek]="true"
+      >
+        <bmw-error-message>Sorry, this field can not be empty.</bmw-error-message>
+      </bmw-datepicker>
+    </div>
+    <div class="bmw__grid__cell bmw__grid__cell--span-6">
+      <bmw-label for="date-of-pickup">{{'END_DATE' | translate}}</bmw-label>
+      <bmw-datepicker
+        inputId="date-of-pickup"
+        [required]="true"
+        placeholder="YYYY-MM-DD"
+        dateFormat="yy-mm-dd"
+        [showButtonBar]="true"
+        [(ngModel)]="bom.endDate"
+        [showWeek]="true"
+      >
+        <bmw-error-message>Sorry, this field can not be empty.</bmw-error-message>
+      </bmw-datepicker>
+    </div>
+  </div>
+  <div class="footer">
+    <bmw-button button="primary" (click)="onSave()">Save</bmw-button>
+    <bmw-button button="secondary" (click)="onBack()">Cancel</bmw-button>
+  </div>
+</bmw-generic-tile>

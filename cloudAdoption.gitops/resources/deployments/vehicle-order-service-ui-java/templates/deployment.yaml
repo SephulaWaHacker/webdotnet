@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}
+    app.name: {{ .Chart.Name }} # Used for chaos testing
+  name: {{ .Chart.Name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    secret.reloader.stakater.com/reload: "{{ .Values.project.name }}-secrets"
+spec:
+  replicas: {{ .Values.replicas }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - "{{ .Chart.Name }}"
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.servicePort | quote }}
+        prometheus.io/scheme: {{ .Values.serviceScheme | lower | quote }}
+        prometheus.io/path: {{ .Values.metricsPath | quote }}
+        checksum/config: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }} # Checksum on our config map changes when the CM has been changed, this triggers a new deployment...
+      labels:
+        app: {{ .Chart.Name }}
+        app.name: {{ .Chart.Name }} # Used for chaos testing
+        version: {{ .Values.image.tag }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      # encourages the scheduler to spread replicas across worker nodes to increase resilience
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - "{{ .Chart.Name }}"
+          {{- if $.Values.antiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    {{- range $label := $.Values.antiAffinity }}
+                      - "{{ $label }}"
+                    {{- end }}
+              topologyKey: kubernetes.io/hostname
+          {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.url }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          env:
+            {{- range $key, $value :=  .Values.environmentSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $value.key | default $value.secret_name }}
+                  name: {{ $.Values.project.name }}-secrets
+            {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-config
+          ports:
+            - containerPort: {{ .Values.servicePort }}
+              name: {{ .Values.serviceScheme | lower }}
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /opt/app-root/src/assets/config
+            name: {{ .Chart.Name }}-config
+            readOnly: true
+      volumes:
+        - name: {{ .Chart.Name }}-config
+          configMap:
+            defaultMode: 420
+            name: {{ .Chart.Name }}-config
+      imagePullSecrets:
+        - name: acr-secret
+      restartPolicy: Always
+
+
+
